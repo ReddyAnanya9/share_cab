@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,7 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText mEmail,mPass;
     Button loginbtn;
+    TextView notregister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class Login extends AppCompatActivity {
         mEmail=findViewById(R.id.editText6);
         mPass= findViewById(R.id.editText7);
         loginbtn=findViewById(R.id.loginbtn);
+        notregister=findViewById(R.id.textView13);
         mAuth=FirebaseAuth.getInstance();
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +50,13 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+        notregister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Login.this,"directing to signup page",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),signup.class));
             }
         });
 
