@@ -56,7 +56,7 @@ public class cabbookingform extends AppCompatActivity {
                 final String splreq=spl_req.getText().toString();
                 CollectionReference Bookings=db.collection("User Bookings");
                 UserBookings booking= new UserBookings(des,pickpt,splreq,picktime,Integer.parseInt(luggage));
-                Bookings.add(booking).
+                /*Bookings.add(booking).
                         addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
@@ -68,8 +68,20 @@ public class cabbookingform extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(cabbookingform.this,e.getMessage(),Toast.LENGTH_LONG).show();
                     }
+                });*/
+                Bookings.document(mAuth.getCurrentUser().getUid()).set(booking).
+                        addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(cabbookingform.this,"Booking registered",Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(cabbookingform.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
                 });
-
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
