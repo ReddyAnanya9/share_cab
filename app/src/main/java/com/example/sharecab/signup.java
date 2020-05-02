@@ -27,8 +27,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
 import static android.content.ContentValues.TAG;
@@ -96,12 +94,24 @@ public class signup extends AppCompatActivity{
                             Toast.makeText(signup.this, "User created", Toast.LENGTH_SHORT).show();
                             CollectionReference users=db.collection("Users") ;
                             User u= new User(fullname,email,phoneno);
-                            users.add(u).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            /*users.add(u).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     Toast.makeText(signup.this,"User added to database",Toast.LENGTH_LONG).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(signup.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                                }
+                            });*/
+                            users.document(mAuth.getCurrentUser().getUid()).set(u).
+                                    addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(signup.this,"User added to database",Toast.LENGTH_LONG).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(signup.this,e.getMessage(),Toast.LENGTH_LONG).show();
