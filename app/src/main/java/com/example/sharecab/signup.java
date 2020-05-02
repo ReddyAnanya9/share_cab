@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,7 +37,7 @@ public class signup extends AppCompatActivity{
     EditText mFullName,mEmail,mPassword,checkPass,mphoneno;
     Button mRegisterBtn;
     TextView mLoginBtn;
-    String userID;
+ //   String userID;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -53,10 +54,12 @@ public class signup extends AppCompatActivity{
         mphoneno=findViewById(R.id.editText5);
         mAuth = FirebaseAuth.getInstance();
         db=FirebaseFirestore.getInstance();
-        if(mAuth.getCurrentUser()!= null){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+        if(mAuth.getCurrentUser()!= null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
+
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +68,7 @@ public class signup extends AppCompatActivity{
                 final String fullname = mFullName.getText().toString();
                 final String phoneno = mphoneno.getText().toString();
                 String checkpass = checkPass.getText().toString();
+
                 if(TextUtils.isEmpty(email)){
                     mEmail.setError("email required");
                     return;
@@ -83,29 +87,27 @@ public class signup extends AppCompatActivity{
                 if(!password.equals(checkpass)){
                     checkPass.setError("password doesn't match");
                 }
+
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(signup.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
                             Toast.makeText(signup.this, "User created", Toast.LENGTH_SHORT).show();
-                            userID = mAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = db.collection("users").document(userID);
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("fname", fullname);
-                            user.put("email", email);
-                            user.put("phone no.", phoneno);
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            CollectionReference users=db.collection("Users") ;
+                            User u= new User(fullname,email,phoneno);
+                            users.add(u).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "user profile created for " + userID);
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Toast.makeText(signup.this,"User added to database",Toast.LENGTH_LONG).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "failure occurred" + e.toString());
+                                    Toast.makeText(signup.this,e.getMessage(),Toast.LENGTH_LONG).show();
                                 }
                             });
+
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Toast.makeText(signup.this, "Error occurred" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
