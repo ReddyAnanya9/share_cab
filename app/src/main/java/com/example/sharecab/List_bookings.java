@@ -58,8 +58,8 @@ public class List_bookings extends AppCompatActivity {
 
                 holder.from.setText( "pick up point : " + model.getPickup_pt());
                 holder.to.setText("destination : "+   model.getDestination());
-                holder.time.setText("time to pick : "+model.getTime());
-                holder.lugg.setText("luggage weight : "+model.getLuggage()+"");
+                holder.time.setText("time required to pick : "+model.getTime());
+                holder.lugg.setText("luggage Weight : "+model.getLuggage()+"");
                 holder.spreq.setText("special req.: "+model.getSpecial_Req());
 
             }
